@@ -1,6 +1,15 @@
-# ElimuAI - AI-Powered E-Learning Platform
+# ElimuAI - AI-Powered E-Learning Platform for Tanzania
 
-ElimuAI is a comprehensive e-learning platform designed for Tanzanian users, offering personalized AI tutoring in Swahili and English for Math, Business, and Vocational Skills.
+![GitHub stars](https://img.shields.io/github/stars/kadioko/ElimuAI?style=social)
+![GitHub forks](https://img.shields.io/github/forks/kadioko/ElimuAI?style=social)
+![GitHub issues](https://img.shields.io/github/issues/kadioko/ElimuAI)
+![Python](https://img.shields.io/badge/python-3.11+-blue.svg)
+![Flask](https://img.shields.io/badge/flask-3.0.0-green.svg)
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+
+**AI-powered e-learning platform for Tanzania** with Swahili/English support, gamification, and M-Pesa integration.
+
+ElimuAI is a comprehensive e-learning platform designed for Tanzanian users, offering personalized AI tutoring in Swahili and English for Math, Business, and Vocational Skills. Built with mobile-first design for accessibility across Tanzania.
 
 ## Features
 
