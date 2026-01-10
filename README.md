@@ -1,5 +1,6 @@
 # ElimuAI - AI-Powered E-Learning Platform for Tanzania
 
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen.svg)](https://elimuai.onrender.com)
 ![GitHub stars](https://img.shields.io/github/stars/kadioko/ElimuAI?style=social)
 ![GitHub forks](https://img.shields.io/github/forks/kadioko/ElimuAI?style=social)
 ![GitHub issues](https://img.shields.io/github/issues/kadioko/ElimuAI)
@@ -7,11 +8,23 @@
 ![Flask](https://img.shields.io/badge/flask-3.0.0-green.svg)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
+> **🌐 Live Demo: [https://elimuai.onrender.com](https://elimuai.onrender.com)**
+
 **AI-powered e-learning platform for Tanzania** with Swahili/English support, gamification, and M-Pesa integration.
 
 ElimuAI is a comprehensive e-learning platform designed for Tanzanian users, offering personalized AI tutoring in Swahili and English for Math, Business, and Vocational Skills. Built with mobile-first design for accessibility across Tanzania.
 
-## Features
+## 🎯 Live Demo
+
+**Try it now:** [https://elimuai.onrender.com](https://elimuai.onrender.com)
+
+- Register a new account
+- Browse courses in Math, Business, and Vocational Skills
+- Take adaptive quizzes with instant feedback
+- Chat with the AI tutor in Swahili or English
+- Track your learning progress
+
+## ✨ Features
 
 - 🤖 **AI Chatbot Tutor**: Intelligent NLP-based chatbot providing instant help in Swahili and English
 - 📚 **Adaptive Quizzes**: Interactive quizzes with instant feedback and explanations
@@ -306,17 +319,38 @@ heroku open
 5. **Background Jobs**: Use Celery for async tasks (email, notifications)
 6. **API Rate Limiting**: Implement rate limiting for API endpoints
 
-## Future Enhancements
+## 🚀 Roadmap
 
+### Phase 1 - Core Platform ✅
+- [x] User authentication (register/login)
+- [x] Bilingual support (Swahili/English)
+- [x] AI chatbot tutor
+- [x] Adaptive quizzes with feedback
+- [x] Progress tracking dashboard
+- [x] M-Pesa payment integration
+- [x] Mobile-responsive design
+- [x] Deployed to production
+
+### Phase 2 - Engagement (In Progress)
+- [ ] Gamification system (points, badges, leaderboards)
+- [ ] Daily streaks and rewards
+- [ ] Social learning features
+- [ ] Push notifications
+- [ ] Offline mode (PWA)
+
+### Phase 3 - Advanced Features
 - [ ] Video lessons support
-- [ ] Real-time notifications
-- [ ] Social learning features (forums, groups)
-- [ ] Advanced AI with GPT integration
-- [ ] Mobile app (React Native/Flutter)
-- [ ] Offline mode support
+- [ ] Advanced AI with GPT/Claude integration
 - [ ] Certificate generation
 - [ ] Instructor dashboard
 - [ ] Advanced analytics
+- [ ] Mobile app (React Native/Flutter)
+
+### Phase 4 - Scale
+- [ ] Multi-tenant for schools
+- [ ] Corporate training modules
+- [ ] API for third-party integration
+- [ ] Regional expansion (Kenya, Uganda, Rwanda)
 
 ## Contributing
 
