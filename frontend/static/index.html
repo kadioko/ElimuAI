@@ -14,28 +14,32 @@
     <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
 </head>
 <body>
+    <!-- Toast Container for Notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+    
     <div id="app">
         <nav class="navbar" id="navbar">
             <div class="nav-container">
-                <div class="nav-brand">
-                    <span class="logo">📚 ElimuAI</span>
+                <div class="nav-brand" onclick="showPage('home')">
+                    <span class="logo">🎓 ElimuAI</span>
                 </div>
+                
                 <div class="nav-menu" id="navMenu">
                     <a href="#" class="nav-link" onclick="showPage('home')">
-                        <span class="nav-text-en">Home</span>
-                        <span class="nav-text-sw" style="display:none;">Nyumbani</span>
+                        <span class="nav-text-en">🏠 Home</span>
+                        <span class="nav-text-sw" style="display:none;">🏠 Nyumbani</span>
                     </a>
                     <a href="#" class="nav-link" onclick="showPage('courses')" id="coursesLink" style="display:none;">
-                        <span class="nav-text-en">Courses</span>
-                        <span class="nav-text-sw" style="display:none;">Kozi</span>
+                        <span class="nav-text-en">📚 Courses</span>
+                        <span class="nav-text-sw" style="display:none;">📚 Kozi</span>
                     </a>
                     <a href="#" class="nav-link" onclick="showPage('dashboard')" id="dashboardLink" style="display:none;">
-                        <span class="nav-text-en">Dashboard</span>
-                        <span class="nav-text-sw" style="display:none;">Dashibodi</span>
+                        <span class="nav-text-en">📊 Dashboard</span>
+                        <span class="nav-text-sw" style="display:none;">📊 Dashibodi</span>
                     </a>
                     <a href="#" class="nav-link" onclick="showPage('chatbot')" id="chatbotLink" style="display:none;">
-                        <span class="nav-text-en">AI Tutor</span>
-                        <span class="nav-text-sw" style="display:none;">Mwalimu AI</span>
+                        <span class="nav-text-en">🤖 AI Tutor</span>
+                        <span class="nav-text-sw" style="display:none;">🤖 Mwalimu AI</span>
                     </a>
                     <a href="#" class="nav-link" onclick="showPage('gamification')" id="gamificationLink" style="display:none;">
                         <span class="nav-text-en">🏆 Rewards</span>
@@ -45,6 +49,7 @@
                         <span class="nav-text-en">📜 Certs</span>
                         <span class="nav-text-sw" style="display:none;">📜 Vyeti</span>
                     </a>
+                    
                     <div class="nav-auth" id="navAuth">
                         <button class="btn btn-outline" onclick="showPage('login')" id="loginBtn">
                             <span class="nav-text-en">Login</span>
@@ -59,13 +64,23 @@
                             <span class="nav-text-sw" style="display:none;">Toka</span>
                         </button>
                     </div>
-                    <div class="language-toggle">
-                        <button onclick="toggleLanguage()" class="btn-lang">
-                            <span id="langToggleText">SW</span>
-                        </button>
-                    </div>
                 </div>
-                <button class="nav-toggle" onclick="toggleNav()">☰</button>
+                
+                <div class="nav-controls">
+                    <button onclick="toggleTheme()" class="theme-toggle" id="themeToggle" title="Toggle dark mode">
+                        <span id="themeIcon">🌙</span>
+                    </button>
+                    <button onclick="toggleLanguage()" class="btn-lang" title="Switch language">
+                        <span id="langToggleText">SW</span>
+                    </button>
+                    <button class="nav-toggle" id="navToggle" onclick="toggleNav()">
+                        <div class="hamburger">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </button>
+                </div>
             </div>
         </nav>
 

@@ -1,14 +1,62 @@
 let currentUser = null;
 let currentLanguage = 'en';
 let currentCourseId = null;
+let currentTheme = localStorage.getItem('theme') || 'light';
 
 const API_BASE = '';
 
+// Initialize theme on load
+document.documentElement.setAttribute('data-theme', currentTheme);
+updateThemeIcon();
+
+// ==================== THEME TOGGLE ====================
+function toggleTheme() {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    localStorage.setItem('theme', currentTheme);
+    updateThemeIcon();
+    showToast(currentTheme === 'dark' ? '🌙 Dark mode enabled' : '☀️ Light mode enabled', 'info');
+}
+
+function updateThemeIcon() {
+    const icon = document.getElementById('themeIcon');
+    if (icon) {
+        icon.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+    }
+}
+
+// ==================== TOAST NOTIFICATIONS ====================
+function showToast(message, type = 'info', duration = 3000) {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+    
+    const icons = {
+        success: '✅',
+        error: '❌',
+        warning: '⚠️',
+        info: 'ℹ️'
+    };
+    
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.innerHTML = `
+        <span class="toast-icon">${icons[type] || icons.info}</span>
+        <div class="toast-content">
+            <div class="toast-message">${message}</div>
+        </div>
+        <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+    `;
+    
+    container.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.animation = 'slideInRight 0.3s ease reverse';
+        setTimeout(() => toast.remove(), 300);
+    }, duration);
+}
+
 function showNotification(message, type = 'info') {
-    const notification = document.getElementById('notification');
-    notification.textContent = message;
-    notification.className = `notification ${type} show`;
-    setTimeout(() => notification.classList.remove('show'), 3000);
+    showToast(message, type);
 }
 
 function showPage(pageName) {
@@ -24,7 +72,64 @@ function showPage(pageName) {
 }
 
 function toggleNav() {
-    document.getElementById('navMenu').classList.toggle('active');
+    const navMenu = document.getElementById('navMenu');
+    const navToggle = document.getElementById('navToggle');
+    navMenu.classList.toggle('active');
+    navToggle.classList.toggle('active');
+}
+
+// Close mobile nav when clicking outside
+document.addEventListener('click', (e) => {
+    const navMenu = document.getElementById('navMenu');
+    const navToggle = document.getElementById('navToggle');
+    if (navMenu && navToggle && !navMenu.contains(e.target) && !navToggle.contains(e.target)) {
+        navMenu.classList.remove('active');
+        navToggle.classList.remove('active');
+    }
+});
+
+// ==================== CONFETTI EFFECT ====================
+function showConfetti() {
+    const colors = ['#4f46e5', '#7c3aed', '#10b981', '#f59e0b', '#ef4444'];
+    for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDelay = Math.random() * 2 + 's';
+        confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 3000);
+    }
+}
+
+// ==================== LOADING STATE ====================
+function showLoading(container) {
+    if (typeof container === 'string') {
+        container = document.getElementById(container);
+    }
+    if (container) {
+        container.innerHTML = `
+            <div class="loading-state" style="display:flex;justify-content:center;padding:3rem;">
+                <div class="spinner"></div>
+            </div>
+        `;
+    }
+}
+
+function showSkeleton(container, count = 3) {
+    if (typeof container === 'string') {
+        container = document.getElementById(container);
+    }
+    if (container) {
+        let skeletons = '';
+        for (let i = 0; i < count; i++) {
+            skeletons += `
+                <div class="skeleton skeleton-card" style="margin-bottom:1rem;"></div>
+            `;
+        }
+        container.innerHTML = skeletons;
+    }
 }
 
 function toggleLanguage() {
