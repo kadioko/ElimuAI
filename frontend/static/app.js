@@ -248,16 +248,38 @@ async function loadCourses(category = null) {
 }
 
 function displayCourses(courses) {
+    // Store for search
+    if (courses.length > 0 && allCourses.length === 0) {
+        allCourses = courses;
+    }
+    
     const grid = document.getElementById('coursesGrid');
+    const categoryIcons = {
+        'math': '📐',
+        'business': '💼',
+        'vocational': '🔧'
+    };
+    
     grid.innerHTML = courses.map(course => `
         <div class="course-card" onclick="viewCourse(${course.id})">
+            <div class="course-card-image">
+                ${categoryIcons[course.category.toLowerCase()] || '📚'}
+                ${course.is_premium ? '<span class="course-card-badge">⭐ Premium</span>' : ''}
+            </div>
             <div class="course-header">
                 <h3 class="course-title">${course.title}</h3>
                 <span class="course-category">${course.category}</span>
-                ${course.is_premium ? '<span class="premium-badge">Premium</span>' : ''}
             </div>
             <div class="course-body">
                 <p class="course-description">${course.description}</p>
+                <div class="course-progress">
+                    <div class="course-progress-bar">
+                        <div class="course-progress-fill" style="width: ${course.progress || 0}%"></div>
+                    </div>
+                    <div class="course-progress-text">
+                        <span>${course.progress || 0}% ${currentLanguage === 'sw' ? 'imekamilika' : 'complete'}</span>
+                    </div>
+                </div>
                 <div class="course-meta">
                     <span>📚 ${course.lesson_count} ${currentLanguage === 'sw' ? 'Masomo' : 'Lessons'}</span>
                     <span>📝 ${course.quiz_count} ${currentLanguage === 'sw' ? 'Majaribio' : 'Quizzes'}</span>
@@ -519,10 +541,7 @@ function displayDashboard(data) {
 }
 
 function initChatbot() {
-    const chatMessages = document.getElementById('chatMessages');
-    if (chatMessages.children.length === 0) {
-        addChatMessage('bot', currentLanguage === 'sw' ? 'Habari! Mimi ni msaidizi wako wa ElimuAI. Ninaweza kukusaidia na hesabu, biashara, na ujuzi wa ufundi. Unaweza kuniuliza swali lolote!' : 'Hello! I\'m your ElimuAI assistant. I can help you with math, business, and vocational skills. Feel free to ask me anything!');
-    }
+    // Chatbot is already initialized with welcome message in HTML
 }
 
 async function sendMessage(event) {
@@ -532,8 +551,16 @@ async function sendMessage(event) {
     
     if (!message) return;
     
+    // Hide welcome and suggestions after first message
+    const welcome = document.querySelector('.chat-welcome');
+    if (welcome) welcome.style.display = 'none';
+    document.getElementById('suggestedQuestions').style.display = 'none';
+    
     addChatMessage('user', message);
     input.value = '';
+    
+    // Show typing indicator
+    showTypingIndicator();
     
     try {
         const response = await fetch(`${API_BASE}/api/chatbot`, {
@@ -543,11 +570,16 @@ async function sendMessage(event) {
         });
         const result = await response.json();
         
+        hideTypingIndicator();
+        
         if (result.success) {
             addChatMessage('bot', result.response);
+            sounds.notification();
         }
     } catch (error) {
-        addChatMessage('bot', 'Sorry, I encountered an error.');
+        hideTypingIndicator();
+        addChatMessage('bot', currentLanguage === 'sw' ? 'Samahani, kuna tatizo.' : 'Sorry, I encountered an error.');
+        sounds.error();
     }
 }
 
@@ -555,9 +587,90 @@ function addChatMessage(sender, text) {
     const chatMessages = document.getElementById('chatMessages');
     const messageDiv = document.createElement('div');
     messageDiv.className = `chat-message ${sender}`;
-    messageDiv.innerHTML = `<div class="chat-bubble">${text}</div>`;
+    messageDiv.textContent = text;
     chatMessages.appendChild(messageDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function showTypingIndicator() {
+    document.getElementById('typingIndicator').style.display = 'flex';
+}
+
+function hideTypingIndicator() {
+    document.getElementById('typingIndicator').style.display = 'none';
+}
+
+function clearChat() {
+    const chatMessages = document.getElementById('chatMessages');
+    chatMessages.innerHTML = `
+        <div class="chat-welcome">
+            <div class="welcome-icon">👋</div>
+            <h3 class="text-en">Hello! I'm your AI Tutor</h3>
+            <h3 class="text-sw" style="display:${currentLanguage === 'sw' ? 'block' : 'none'};">Habari! Mimi ni Mwalimu wako wa AI</h3>
+            <p class="text-en">Ask me anything about Math, Business, or Vocational Skills!</p>
+            <p class="text-sw" style="display:${currentLanguage === 'sw' ? 'block' : 'none'};">Niulize chochote kuhusu Hesabu, Biashara, au Ujuzi wa Ufundi!</p>
+        </div>
+    `;
+    document.getElementById('suggestedQuestions').style.display = 'flex';
+    showToast(currentLanguage === 'sw' ? 'Mazungumzo yamefutwa' : 'Chat cleared', 'info');
+}
+
+function askSuggested(question) {
+    document.getElementById('chatInput').value = question;
+    document.querySelector('.chat-input-form').dispatchEvent(new Event('submit'));
+}
+
+function startVoiceInput() {
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        showToast(currentLanguage === 'sw' ? 'Sauti haitekezeki' : 'Voice input not supported', 'warning');
+        return;
+    }
+    
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = currentLanguage === 'sw' ? 'sw-TZ' : 'en-US';
+    
+    recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById('chatInput').value = transcript;
+        sounds.click();
+    };
+    
+    recognition.onerror = () => {
+        showToast(currentLanguage === 'sw' ? 'Tatizo la sauti' : 'Voice error', 'error');
+    };
+    
+    recognition.start();
+    showToast(currentLanguage === 'sw' ? '🎤 Sema sasa...' : '🎤 Speak now...', 'info');
+}
+
+// ==================== SEARCH & FILTER ====================
+let allCourses = [];
+
+function searchCourses(query) {
+    query = query.toLowerCase().trim();
+    const filtered = allCourses.filter(course => 
+        course.title.toLowerCase().includes(query) ||
+        course.description.toLowerCase().includes(query) ||
+        course.category.toLowerCase().includes(query)
+    );
+    
+    if (filtered.length === 0) {
+        document.getElementById('coursesGrid').innerHTML = '';
+        document.getElementById('noResults').style.display = 'block';
+    } else {
+        document.getElementById('noResults').style.display = 'none';
+        displayCourses(filtered);
+    }
+}
+
+// ==================== FLOATING ACTION BUTTON ====================
+function toggleFab() {
+    const container = document.getElementById('fabContainer');
+    const icon = document.getElementById('fabIcon');
+    container.classList.toggle('open');
+    icon.textContent = container.classList.contains('open') ? '×' : '+';
+    icon.style.transform = container.classList.contains('open') ? 'rotate(45deg)' : 'rotate(0)';
 }
 
 // ==================== GAMIFICATION FUNCTIONS ====================

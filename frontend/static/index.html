@@ -310,31 +310,49 @@
 
         <div id="coursesPage" class="page">
             <div class="container">
-                <h1>
-                    <span class="text-en">Available Courses</span>
-                    <span class="text-sw" style="display:none;">Kozi Zinazopatikana</span>
-                </h1>
+                <div class="page-header">
+                    <h1>
+                        <span class="text-en">📚 Available Courses</span>
+                        <span class="text-sw" style="display:none;">📚 Kozi Zinazopatikana</span>
+                    </h1>
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="courseSearch" class="search-input" placeholder="Search courses..." oninput="searchCourses(this.value)">
+                    </div>
+                </div>
                 
                 <div class="filter-bar">
                     <button class="filter-btn active" onclick="filterCourses('all')">
+                        <span class="filter-icon">📋</span>
                         <span class="text-en">All</span>
                         <span class="text-sw" style="display:none;">Zote</span>
                     </button>
                     <button class="filter-btn" onclick="filterCourses('math')">
+                        <span class="filter-icon">📐</span>
                         <span class="text-en">Math</span>
                         <span class="text-sw" style="display:none;">Hesabu</span>
                     </button>
                     <button class="filter-btn" onclick="filterCourses('business')">
+                        <span class="filter-icon">💼</span>
                         <span class="text-en">Business</span>
                         <span class="text-sw" style="display:none;">Biashara</span>
                     </button>
                     <button class="filter-btn" onclick="filterCourses('vocational')">
+                        <span class="filter-icon">🔧</span>
                         <span class="text-en">Vocational</span>
                         <span class="text-sw" style="display:none;">Ufundi</span>
                     </button>
                 </div>
 
                 <div class="courses-grid" id="coursesGrid"></div>
+                
+                <div class="no-results" id="noResults" style="display:none;">
+                    <div class="no-results-icon">🔍</div>
+                    <h3 class="text-en">No courses found</h3>
+                    <h3 class="text-sw" style="display:none;">Hakuna kozi zilizopatikana</h3>
+                    <p class="text-en">Try adjusting your search or filters</p>
+                    <p class="text-sw" style="display:none;">Jaribu kubadilisha utafutaji wako</p>
+                </div>
             </div>
         </div>
 
@@ -372,21 +390,54 @@
             <div class="container">
                 <div class="chatbot-container">
                     <div class="chatbot-header">
-                        <h2>🤖 
-                            <span class="text-en">AI Tutor</span>
-                            <span class="text-sw" style="display:none;">Mwalimu wa AI</span>
-                        </h2>
-                        <p>
-                            <span class="text-en">Ask me anything about Math, Business, or Vocational Skills!</span>
-                            <span class="text-sw" style="display:none;">Niulize chochote kuhusu Hesabu, Biashara, au Ujuzi wa Ufundi!</span>
-                        </p>
+                        <div class="chatbot-avatar">🤖</div>
+                        <div class="chatbot-info">
+                            <h2>
+                                <span class="text-en">AI Tutor</span>
+                                <span class="text-sw" style="display:none;">Mwalimu wa AI</span>
+                            </h2>
+                            <span class="chatbot-status">
+                                <span class="status-dot online"></span>
+                                <span class="text-en">Online - Ready to help</span>
+                                <span class="text-sw" style="display:none;">Mtandaoni - Tayari kusaidia</span>
+                            </span>
+                        </div>
+                        <button class="btn btn-sm btn-outline" onclick="clearChat()" title="Clear chat">🗑️</button>
                     </div>
-                    <div class="chat-messages" id="chatMessages"></div>
+                    
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="chat-welcome">
+                            <div class="welcome-icon">👋</div>
+                            <h3 class="text-en">Hello! I'm your AI Tutor</h3>
+                            <h3 class="text-sw" style="display:none;">Habari! Mimi ni Mwalimu wako wa AI</h3>
+                            <p class="text-en">Ask me anything about Math, Business, or Vocational Skills!</p>
+                            <p class="text-sw" style="display:none;">Niulize chochote kuhusu Hesabu, Biashara, au Ujuzi wa Ufundi!</p>
+                        </div>
+                    </div>
+                    
+                    <div class="typing-indicator" id="typingIndicator" style="display:none;">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <span class="text-en">AI is thinking...</span>
+                        <span class="text-sw" style="display:none;">AI inafikiria...</span>
+                    </div>
+                    
+                    <div class="suggested-questions" id="suggestedQuestions">
+                        <span class="suggested-label text-en">Try asking:</span>
+                        <span class="suggested-label text-sw" style="display:none;">Jaribu kuuliza:</span>
+                        <button class="suggested-btn" onclick="askSuggested('How do I solve quadratic equations?')">📐 Quadratic equations</button>
+                        <button class="suggested-btn" onclick="askSuggested('Explain basic accounting')">💰 Basic accounting</button>
+                        <button class="suggested-btn" onclick="askSuggested('What are marketing strategies?')">📈 Marketing tips</button>
+                    </div>
+                    
                     <form class="chat-input-form" onsubmit="sendMessage(event)">
-                        <input type="text" id="chatInput" class="chat-input" placeholder="Type your question..." required>
-                        <button type="submit" class="btn btn-primary">
-                            <span class="text-en">Send</span>
-                            <span class="text-sw" style="display:none;">Tuma</span>
+                        <div class="chat-input-wrapper">
+                            <input type="text" id="chatInput" class="chat-input" placeholder="Type your question..." required autocomplete="off">
+                            <button type="button" class="voice-btn" onclick="startVoiceInput()" title="Voice input">🎤</button>
+                        </div>
+                        <button type="submit" class="btn btn-primary send-btn" id="sendBtn">
+                            <span class="send-icon">➤</span>
                         </button>
                     </form>
                 </div>
@@ -656,6 +707,35 @@
                 <div class="shortcut-item"><kbd>Esc</kbd> <span>Close Modal</span></div>
             </div>
         </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <div class="fab-container" id="fabContainer">
+        <div class="fab-menu">
+            <div class="fab-item" onclick="showPage('chatbot'); toggleFab();">
+                <span class="fab-item-icon">🤖</span>
+                <span class="text-en">AI Tutor</span>
+                <span class="text-sw" style="display:none;">Mwalimu AI</span>
+            </div>
+            <div class="fab-item" onclick="showPage('courses'); toggleFab();">
+                <span class="fab-item-icon">📚</span>
+                <span class="text-en">Courses</span>
+                <span class="text-sw" style="display:none;">Kozi</span>
+            </div>
+            <div class="fab-item" onclick="showPage('gamification'); toggleFab();">
+                <span class="fab-item-icon">🏆</span>
+                <span class="text-en">Rewards</span>
+                <span class="text-sw" style="display:none;">Tuzo</span>
+            </div>
+            <div class="fab-item" onclick="showShortcutsModal(); toggleFab();">
+                <span class="fab-item-icon">⌨️</span>
+                <span class="text-en">Shortcuts</span>
+                <span class="text-sw" style="display:none;">Njia za mkato</span>
+            </div>
+        </div>
+        <button class="fab" onclick="toggleFab()" id="fabBtn">
+            <span id="fabIcon">+</span>
+        </button>
     </div>
 
     <!-- PWA Install Prompt -->
