@@ -24,6 +24,9 @@ import ForumTopicScreen from './src/screens/forums/ForumTopicScreen';
 import VideoRecorderScreen from './src/screens/VideoRecorderScreen';
 import OfflineContentScreen from './src/screens/OfflineContentScreen';
 import AIRecommendationsScreen from './src/screens/AIRecommendationsScreen';
+import LeaderboardScreen from './src/screens/LeaderboardScreen';
+import AchievementsScreen from './src/screens/AchievementsScreen';
+import FlashcardsScreen from './src/screens/FlashcardsScreen';
 
 // Components
 import TabBar from './src/components/navigation/TabBar';
@@ -95,6 +98,8 @@ export default function App() {
                 <Stack.Screen name="VideoRecorder" component={VideoRecorderScreen} />
                 <Stack.Screen name="OfflineContent" component={OfflineContentScreen} />
                 <Stack.Screen name="AIRecommendations" component={AIRecommendationsScreen} />
+                <Stack.Screen name="Leaderboard" component={LeaderboardScreen} />
+                <Stack.Screen name="Achievements" component={AchievementsScreen} />
               </Stack.Navigator>
             </NavigationContainer>
             <StatusBar style="auto" />

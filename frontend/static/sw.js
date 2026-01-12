@@ -1,53 +1,61 @@
 const CACHE_NAME = 'elimuai-v1';
-const OFFLINE_URL = '/offline.html';
 
-const ASSETS_TO_CACHE = [
+// Assets to cache immediately
+const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/styles.css',
   '/app.js',
   '/manifest.json',
+  '/favicon.ico',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png',
   '/offline.html'
 ];
 
-// Install event - cache assets
+// API endpoints to cache
+const API_ENDPOINTS = [
+  '/api/courses',
+  '/api/user/profile',
+  '/api/achievements',
+  '/api/translations/en'
+];
+
+// Cache strategies
+const CACHE_STRATEGIES = {
+  // Cache first, then network
+  CACHE_FIRST: 'cache-first',
+  // Network first, then cache
+  NETWORK_FIRST: 'network-first',
+  // Cache only
+  CACHE_ONLY: 'cache-only',
+  // Network only
+  NETWORK_ONLY: 'network-only',
+  // Stale while revalidate
+  STALE_WHILE_REVALIDATE: 'stale-while-revalidate'
+};
+
+// Install event - cache static assets
 self.addEventListener('install', (event) => {
+  console.log('Service Worker: Installing...');
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('ElimuAI: Caching app shell');
-        return cache.addAll(ASSETS_TO_CACHE);
-      })
-      .then(() => self.skipWaiting())
-  );
-});
-
-// Activate event - clean old caches
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('ElimuAI: Deleting old cache:', cacheName);
-            return caches.delete(cacheName);
+    Promise.all([
+      caches.open(STATIC_CACHE).then(cache => {
+        console.log('Caching static assets...');
+        return cache.addAll(STATIC_ASSETS);
+      }),
+      // Pre-cache critical API data
+      caches.open(API_CACHE).then(async cache => {
+        console.log('Caching API endpoints...');
+        for (const endpoint of API_ENDPOINTS) {
+          try {
+            const response = await fetch(endpoint);
+            if (response.ok) {
+              await cache.put(endpoint, response);
+            }
+          } catch (error) {
+            console.log(`Failed to cache ${endpoint}:`, error);
           }
-        })
-      );
-    }).then(() => self.clients.claim())
-  );
-});
-
-// Fetch event - serve from cache, fallback to network
-self.addEventListener('fetch', (event) => {
-  // Skip non-GET requests
-  if (event.request.method !== 'GET') {
-    return;
-  }
-
-  // Skip API requests - always fetch from network
-  if (event.request.url.includes('/api/')) {
-    event.respondWith(
       fetch(event.request)
         .catch(() => {
           return new Response(
